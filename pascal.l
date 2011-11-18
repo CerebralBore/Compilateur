@@ -83,7 +83,7 @@ CHIFFRES [0-9]+
 {F}{U}{N}{C}{T}{I}{O}{N}		column += yyleng; return KW_FUNC;
 {I}{F}					column += yyleng; return KW_IF;
 {M}{O}{D}				column += yyleng; return KW_MOD;
-{N}{I}{L}				column += yyleng; return KW_NIL;
+{N}{I}{L}				column += yyleng; yylval.val = yytext; return KW_NIL;
 {N}{O}{T}				column += yyleng; return KW_NOT;
 {O}{F}					column += yyleng; return KW_OF;
 {O}{R}					column += yyleng; return KW_OR;
@@ -119,12 +119,12 @@ CHIFFRES [0-9]+
 "**"					column += yyleng; return OP_EXP;
 "^"					column += yyleng; return OP_PTR;
 
-{T}{R}{U}{E}				column += yyleng; return TOK_BOOLEAN;
-{F}{A}{L}{S}{E}				column += yyleng; return TOK_BOOLEAN;
+{T}{R}{U}{E}				column += yyleng; yylval.val = yytext; return TOK_BOOLEAN;
+{F}{A}{L}{S}{E}				column += yyleng; yylval.val = yytext; return TOK_BOOLEAN;
 [a-zA-Z]([a-zA-Z0-9])*			column += yyleng; yylval.id = ti.inserer(yytext); return TOK_IDENT;
-'({NQUOTE}|'')+'			column += yyleng; return TOK_STRING;
-{CHIFFRES}				column += yyleng; return TOK_INTEGER;
-{CHIFFRES}"."{CHIFFRES}			column += yyleng; return TOK_REAL;
+'({NQUOTE}|'')+'			column += yyleng; yylval.val = yytext; return TOK_STRING;
+{CHIFFRES}				column += yyleng; yylval.val = yytext; return TOK_INTEGER;
+{CHIFFRES}"."{CHIFFRES}			column += yyleng; yylval.val = yytext; return TOK_REAL;
 
 ":"					column += yyleng; return SEP_DOTS;
 ";"					column += yyleng; return SEP_SCOL;

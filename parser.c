@@ -92,6 +92,8 @@
 #include "Type.hpp"
 #include "TypeEntier.hpp"
 
+#include "Arbre.hpp"
+
 typedef pair <int, TableSymbole> TS_Pair;
 
 extern char* yytext;
@@ -109,9 +111,27 @@ int arite;
 string base_type;
 
 
+associer_arbre(Arbre* expr, string valeur, Arbre* expr1, Arbre* expr2) {
+	Arbre a(NULL, valeur);
+	expr = &a;
+	expr1->setParent(expr);
+	expr2->setParent(expr);
+	expr->insererDescendant(expr1);
+	expr->insererDescendant(expr2);
+}
+
+associer_arbre1(Arbre* expr, string valeur, Arbre* expr1) {
+	Arbre a(NULL, valeur);
+	expr = &a;
+	expr1->setParent(expr);
+	expr->insererDescendant(expr1);
+}
+
+
+
 
 /* Line 189 of yacc.c  */
-#line 115 "parser.c"
+#line 135 "parser.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -212,14 +232,16 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 42 "parser.y"
+#line 62 "parser.y"
 
 	int id;
+	string val;
+	Arbre* expr;
 
 
 
 /* Line 214 of yacc.c  */
-#line 223 "parser.c"
+#line 245 "parser.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -231,7 +253,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 235 "parser.c"
+#line 257 "parser.c"
 
 #ifdef short
 # undef short
@@ -574,20 +596,20 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   128,   128,   138,   148,   151,   152,   155,   156,   159,
-     162,   163,   166,   167,   170,   173,   174,   177,   178,   181,
-     192,   195,   200,   201,   204,   205,   208,   209,   212,   229,
-     230,   233,   247,   265,   266,   269,   270,   273,   285,   297,
-     314,   315,   318,   329,   332,   333,   336,   337,   338,   339,
-     340,   343,   344,   345,   346,   347,   348,   351,   354,   355,
-     358,   361,   362,   365,   366,   369,   372,   373,   376,   377,
-     380,   383,   384,   387,   390,   393,   394,   395,   398,   399,
-     402,   405,   408,   411,   414,   417,   420,   423,   428,   429,
-     432,   433,   434,   435,   436,   437,   440,   441,   442,   443,
-     444,   445,   446,   447,   448,   452,   454,   455,   456,   457,
-     458,   461,   462,   463,   464,   467,   468,   469,   470,   471,
-     472,   475,   476,   477,   478,   481,   482,   483,   484,   487,
-     490,   491,   494,   495,   498,   499
+       0,   151,   151,   161,   171,   174,   175,   178,   179,   182,
+     185,   186,   189,   190,   193,   196,   197,   200,   201,   204,
+     215,   218,   223,   224,   227,   228,   231,   232,   235,   252,
+     253,   256,   270,   288,   289,   292,   293,   296,   308,   320,
+     337,   338,   341,   352,   355,   356,   359,   360,   361,   362,
+     363,   366,   367,   368,   369,   370,   371,   374,   377,   378,
+     381,   384,   385,   388,   389,   392,   395,   396,   399,   400,
+     403,   406,   407,   410,   413,   416,   417,   418,   421,   422,
+     425,   428,   431,   434,   437,   440,   443,   446,   451,   452,
+     455,   456,   457,   458,   459,   460,   463,   466,   469,   472,
+     475,   478,   481,   484,   485,   489,   493,   496,   499,   502,
+     505,   510,   513,   516,   519,   524,   527,   531,   535,   539,
+     543,   549,   553,   554,   555,   558,   559,   560,   561,   564,
+     567,   568,   571,   572,   575,   576
 };
 #endif
 
@@ -1702,7 +1724,7 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 128 "parser.y"
+#line 151 "parser.y"
     {
 						map<int, TableSymbole>::iterator it;
 						it = ts_map.find(tsCourante);
@@ -1716,7 +1738,7 @@ yyreduce:
   case 3:
 
 /* Line 1455 of yacc.c  */
-#line 138 "parser.y"
+#line 161 "parser.y"
     {
 						//ts_program
 						TableSymbole ts((yyvsp[(2) - (2)].id));
@@ -1730,7 +1752,7 @@ yyreduce:
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 181 "parser.y"
+#line 204 "parser.y"
     {
 						map<int, TableSymbole>::iterator it;
 						it = ts_map.find(tsCourante);
@@ -1745,7 +1767,7 @@ yyreduce:
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 192 "parser.y"
+#line 215 "parser.y"
     {
 						symboles.push_back((yyvsp[(3) - (3)].id));						
 					;}
@@ -1754,7 +1776,7 @@ yyreduce:
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 195 "parser.y"
+#line 218 "parser.y"
     {
 						symboles.push_back((yyvsp[(1) - (1)].id));
 					;}
@@ -1763,7 +1785,7 @@ yyreduce:
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 212 "parser.y"
+#line 235 "parser.y"
     {
 						map<int, TableSymbole>::iterator it;
 						it = ts_map.find(tsCourante);
@@ -1784,7 +1806,7 @@ yyreduce:
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 233 "parser.y"
+#line 256 "parser.y"
     {
 						//ts_procedure
 						//ajout du symbole procedure dans la table des symboles courante
@@ -1802,7 +1824,7 @@ yyreduce:
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 247 "parser.y"
+#line 270 "parser.y"
     {
 						map<int, TableSymbole>::iterator it;
 						it = ts_map.find(tsCourante);
@@ -1824,7 +1846,7 @@ yyreduce:
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 273 "parser.y"
+#line 296 "parser.y"
     {
 						map<int, TableSymbole>::iterator it;
 						it = ts_map.find(tsCourante);					
@@ -1840,7 +1862,7 @@ yyreduce:
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 285 "parser.y"
+#line 308 "parser.y"
     {
 						map<int, TableSymbole>::iterator it;
 						it = ts_map.find(tsCourante);
@@ -1856,7 +1878,7 @@ yyreduce:
   case 39:
 
 /* Line 1455 of yacc.c  */
-#line 297 "parser.y"
+#line 320 "parser.y"
     {
 						map<int, TableSymbole>::iterator it;
 						it = ts_map.find(tsCourante);
@@ -1877,7 +1899,7 @@ yyreduce:
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 318 "parser.y"
+#line 341 "parser.y"
     {
 						//ts_fonction
 												
@@ -1892,51 +1914,51 @@ yyreduce:
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 344 "parser.y"
+#line 367 "parser.y"
     {base_type = "integer";}
     break;
 
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 345 "parser.y"
+#line 368 "parser.y"
     {base_type = "real";}
     break;
 
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 346 "parser.y"
+#line 369 "parser.y"
     {base_type = "boolean";}
     break;
 
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 347 "parser.y"
+#line 370 "parser.y"
     {base_type = "char";}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 348 "parser.y"
+#line 371 "parser.y"
     {base_type = "string";}
     break;
 
   case 80:
 
 /* Line 1455 of yacc.c  */
-#line 402 "parser.y"
+#line 425 "parser.y"
     {
-						//c3a_instr_while();
+						//c3a_instr_while(Arbre a);
 					;}
     break;
 
   case 81:
 
 /* Line 1455 of yacc.c  */
-#line 405 "parser.y"
+#line 428 "parser.y"
     {
 						//c3a_instr_repeat();
 					;}
@@ -1945,7 +1967,7 @@ yyreduce:
   case 82:
 
 /* Line 1455 of yacc.c  */
-#line 408 "parser.y"
+#line 431 "parser.y"
     {
 						//c3a_instr_for();
 					;}
@@ -1954,7 +1976,7 @@ yyreduce:
   case 83:
 
 /* Line 1455 of yacc.c  */
-#line 411 "parser.y"
+#line 434 "parser.y"
     {
 						//c3a_instr_ifthen();
 					;}
@@ -1963,7 +1985,7 @@ yyreduce:
   case 84:
 
 /* Line 1455 of yacc.c  */
-#line 414 "parser.y"
+#line 437 "parser.y"
     {
 						//c3a_instr_ifthenelse();
 					;}
@@ -1972,7 +1994,7 @@ yyreduce:
   case 85:
 
 /* Line 1455 of yacc.c  */
-#line 417 "parser.y"
+#line 440 "parser.y"
     {
 						//c3a_instr_affect();
 					;}
@@ -1981,7 +2003,7 @@ yyreduce:
   case 86:
 
 /* Line 1455 of yacc.c  */
-#line 420 "parser.y"
+#line 443 "parser.y"
     {
 						//c3a_instr_call();
 					;}
@@ -1990,16 +2012,280 @@ yyreduce:
   case 87:
 
 /* Line 1455 of yacc.c  */
-#line 423 "parser.y"
+#line 446 "parser.y"
     {
 						//c3a_instr_blockcode();
+					;}
+    break;
+
+  case 90:
+
+/* Line 1455 of yacc.c  */
+#line 455 "parser.y"
+    {(yyval.expr) = (yyvsp[(1) - (1)].expr);;}
+    break;
+
+  case 91:
+
+/* Line 1455 of yacc.c  */
+#line 456 "parser.y"
+    {(yyval.expr) = (yyvsp[(1) - (1)].expr);;}
+    break;
+
+  case 92:
+
+/* Line 1455 of yacc.c  */
+#line 457 "parser.y"
+    {(yyval.expr) = (yyvsp[(1) - (1)].expr);;}
+    break;
+
+  case 93:
+
+/* Line 1455 of yacc.c  */
+#line 458 "parser.y"
+    {(yyval.expr) = (yyvsp[(1) - (1)].expr);;}
+    break;
+
+  case 94:
+
+/* Line 1455 of yacc.c  */
+#line 459 "parser.y"
+    {(yyval.expr) = (yyvsp[(1) - (1)].expr);;}
+    break;
+
+  case 95:
+
+/* Line 1455 of yacc.c  */
+#line 460 "parser.y"
+    {(yyval.expr) = (yyvsp[(1) - (1)].expr);;}
+    break;
+
+  case 96:
+
+/* Line 1455 of yacc.c  */
+#line 463 "parser.y"
+    {
+						associer_arbre((yyval.expr), "+", (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr));
+					;}
+    break;
+
+  case 97:
+
+/* Line 1455 of yacc.c  */
+#line 466 "parser.y"
+    {
+						associer_arbre((yyval.expr), "-", (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr));
+					;}
+    break;
+
+  case 98:
+
+/* Line 1455 of yacc.c  */
+#line 469 "parser.y"
+    {
+						associer_arbre((yyval.expr), "*", (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr));
+					;}
+    break;
+
+  case 99:
+
+/* Line 1455 of yacc.c  */
+#line 472 "parser.y"
+    {
+						associer_arbre((yyval.expr), "/", (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr));
+					;}
+    break;
+
+  case 100:
+
+/* Line 1455 of yacc.c  */
+#line 475 "parser.y"
+    {
+						associer_arbre((yyval.expr), "div", (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr));
+					;}
+    break;
+
+  case 101:
+
+/* Line 1455 of yacc.c  */
+#line 478 "parser.y"
+    {
+						associer_arbre((yyval.expr), "mod", (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr));
+					;}
+    break;
+
+  case 102:
+
+/* Line 1455 of yacc.c  */
+#line 481 "parser.y"
+    {
+						associer_arbre((yyval.expr), "**", (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr));
+					;}
+    break;
+
+  case 105:
+
+/* Line 1455 of yacc.c  */
+#line 489 "parser.y"
+    {
+						associer_arbre((yyval.expr), "==", (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr));
+					;}
+    break;
+
+  case 106:
+
+/* Line 1455 of yacc.c  */
+#line 493 "parser.y"
+    {
+						associer_arbre((yyval.expr), "<>", (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr));
+					;}
+    break;
+
+  case 107:
+
+/* Line 1455 of yacc.c  */
+#line 496 "parser.y"
+    {
+						associer_arbre((yyval.expr), "<", (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr));
+					;}
+    break;
+
+  case 108:
+
+/* Line 1455 of yacc.c  */
+#line 499 "parser.y"
+    {
+						associer_arbre((yyval.expr), "<=", (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr));
+					;}
+    break;
+
+  case 109:
+
+/* Line 1455 of yacc.c  */
+#line 502 "parser.y"
+    {
+						associer_arbre((yyval.expr), ">", (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr));
+					;}
+    break;
+
+  case 110:
+
+/* Line 1455 of yacc.c  */
+#line 505 "parser.y"
+    {
+						associer_arbre((yyval.expr), ">=", (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr));
+					;}
+    break;
+
+  case 111:
+
+/* Line 1455 of yacc.c  */
+#line 510 "parser.y"
+    {
+						associer_arbre((yyval.expr), "and", (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr));
+					;}
+    break;
+
+  case 112:
+
+/* Line 1455 of yacc.c  */
+#line 513 "parser.y"
+    {
+						associer_arbre((yyval.expr), "or", (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr));
+					;}
+    break;
+
+  case 113:
+
+/* Line 1455 of yacc.c  */
+#line 516 "parser.y"
+    {
+						associer_arbre((yyval.expr), "xor", (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr));
+					;}
+    break;
+
+  case 114:
+
+/* Line 1455 of yacc.c  */
+#line 519 "parser.y"
+    {
+						associer_arbre1((yyval.expr), "not", (yyvsp[(2) - (2)].expr));
+					;}
+    break;
+
+  case 115:
+
+/* Line 1455 of yacc.c  */
+#line 524 "parser.y"
+    {
+						(yyval.expr) = (yyvsp[(2) - (3)].expr);
+					;}
+    break;
+
+  case 116:
+
+/* Line 1455 of yacc.c  */
+#line 527 "parser.y"
+    {
+						Arbre a(NULL, (yyvsp[(1) - (1)].val));
+						(yyval.expr) = &a;
+					;}
+    break;
+
+  case 117:
+
+/* Line 1455 of yacc.c  */
+#line 531 "parser.y"
+    {
+						Arbre a(NULL, (yyvsp[(1) - (1)].val));
+						(yyval.expr) = &a;
+					;}
+    break;
+
+  case 118:
+
+/* Line 1455 of yacc.c  */
+#line 535 "parser.y"
+    {
+						Arbre a(NULL, (yyvsp[(1) - (1)].val));
+						(yyval.expr) = &a;
+					;}
+    break;
+
+  case 119:
+
+/* Line 1455 of yacc.c  */
+#line 539 "parser.y"
+    {
+						Arbre a(NULL, (yyvsp[(1) - (1)].val));
+						(yyval.expr) = &a;
+					;}
+    break;
+
+  case 120:
+
+/* Line 1455 of yacc.c  */
+#line 543 "parser.y"
+    {
+						Arbre a(NULL, (yyvsp[(1) - (1)].val));
+						(yyval.expr) = &a;
+					;}
+    break;
+
+  case 121:
+
+/* Line 1455 of yacc.c  */
+#line 549 "parser.y"
+    {
+						Arbre a(NULL, ti.getIdentificateur((yyvsp[(1) - (1)].id)));
+						(yyval.expr) = &a;
 					;}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 2003 "parser.c"
+#line 2289 "parser.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2211,7 +2497,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 502 "parser.y"
+#line 579 "parser.y"
 
 
 int main(int argc, char* argv[]) {

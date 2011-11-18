@@ -21,6 +21,8 @@
 #include "Type.hpp"
 #include "TypeEntier.hpp"
 
+#include "Arbre.hpp"
+
 typedef pair <int, TableSymbole> TS_Pair;
 
 extern char* yytext;
@@ -37,10 +39,30 @@ vector<int> arguments;
 int arite;
 string base_type;
 
+
+associer_arbre(Arbre* expr, string valeur, Arbre* expr1, Arbre* expr2) {
+	Arbre a(NULL, valeur);
+	expr = &a;
+	expr1->setParent(expr);
+	expr2->setParent(expr);
+	expr->insererDescendant(expr1);
+	expr->insererDescendant(expr2);
+}
+
+associer_arbre1(Arbre* expr, string valeur, Arbre* expr1) {
+	Arbre a(NULL, valeur);
+	expr = &a;
+	expr1->setParent(expr);
+	expr->insererDescendant(expr1);
+}
+
+
 %}
 
 %union{
 	int id;
+	string val;
+	Arbre* expr;
 }
 
 %token KW_PROGRAM
@@ -122,7 +144,8 @@ string base_type;
 %nonassoc KW_ELSE
 
 %type <id> TOK_IDENT
-
+%type <val> TOK_BOOLEAN TOK_STRING TOK_INTEGER TOK_REAL KW_NIL
+%type <expr> Expression MathExpr CompExpr BoolExpr AtomExpr VarExpr Call
 %%
 
 Program				:	ProgramHeader SEP_SCOL Block SEP_DOT {
@@ -400,7 +423,7 @@ ListInstr			:	ListInstr SEP_SCOL Instr
 			 	;
 
 Instr				:	KW_WHILE Expression KW_DO Instr {
-						//c3a_instr_while();
+						//c3a_instr_while(Arbre a);
 					}
 			 	|	KW_REPEAT ListInstr KW_UNTIL Expression {
 						//c3a_instr_repeat();
@@ -429,50 +452,104 @@ ForDirection			:	KW_TO
 			 	|	KW_DOWNTO
 			 	;
 
-Expression			:	MathExpr
-			 	|	CompExpr
-			 	|	BoolExpr
-			 	|	AtomExpr
-			 	|	VarExpr
-				|	Call
+Expression			:	MathExpr {$$ = $1;}
+			 	|	CompExpr {$$ = $1;}
+			 	|	BoolExpr {$$ = $1;}
+			 	|	AtomExpr {$$ = $1;}
+			 	|	VarExpr {$$ = $1;}
+				|	Call {$$ = $1;}
 			 	;
 
-MathExpr			:	Expression OP_ADD Expression
-			 	|	Expression OP_SUB Expression
-			 	|	Expression OP_MUL Expression
-			 	|	Expression OP_SLASH Expression
-			 	|	Expression KW_DIV Expression
-			 	|	Expression KW_MOD Expression
-			 	|	Expression OP_EXP Expression
+MathExpr			:	Expression OP_ADD Expression {
+						associer_arbre($$, "+", $1, $3);
+					}
+			 	|	Expression OP_SUB Expression {
+						associer_arbre($$, "-", $1, $3);
+					}
+			 	|	Expression OP_MUL Expression {
+						associer_arbre($$, "*", $1, $3);
+					}
+			 	|	Expression OP_SLASH Expression {
+						associer_arbre($$, "/", $1, $3);
+					}
+			 	|	Expression KW_DIV Expression {
+						associer_arbre($$, "div", $1, $3);
+					}
+			 	|	Expression KW_MOD Expression {
+						associer_arbre($$, "mod", $1, $3);
+					}
+			 	|	Expression OP_EXP Expression {
+						associer_arbre($$, "**", $1, $3);
+					}
 			 	|	OP_SUB Expression %prec OP_NEG
 			 	|	OP_ADD Expression %prec OP_POS
 			 	;
 
 
-CompExpr			:	Expression OP_EQ Expression
+CompExpr			:	Expression OP_EQ Expression {
+						associer_arbre($$, "==", $1, $3);
+					}
 
-			 	|	Expression OP_NEQ Expression
-			 	|	Expression OP_LT Expression
-			 	|	Expression OP_LTE Expression
-			 	|	Expression OP_GT Expression
-			 	|	Expression OP_GTE Expression
+			 	|	Expression OP_NEQ Expression {
+						associer_arbre($$, "<>", $1, $3);
+					}
+			 	|	Expression OP_LT Expression {
+						associer_arbre($$, "<", $1, $3);
+					}
+			 	|	Expression OP_LTE Expression {
+						associer_arbre($$, "<=", $1, $3);
+					}
+			 	|	Expression OP_GT Expression {
+						associer_arbre($$, ">", $1, $3);
+					}
+			 	|	Expression OP_GTE Expression {
+						associer_arbre($$, ">=", $1, $3);
+					}
 			 	;
 
-BoolExpr			:	Expression KW_AND Expression
-			 	|	Expression KW_OR Expression
-			 	|	Expression KW_XOR Expression
-			 	|	KW_NOT Expression
+BoolExpr			:	Expression KW_AND Expression {
+						associer_arbre($$, "and", $1, $3);
+					}
+			 	|	Expression KW_OR Expression {
+						associer_arbre($$, "or", $1, $3);
+					}
+			 	|	Expression KW_XOR Expression {
+						associer_arbre($$, "xor", $1, $3);
+					}
+			 	|	KW_NOT Expression {
+						associer_arbre1($$, "not", $2);
+					}
 			 	;
 
-AtomExpr			:	SEP_PO Expression SEP_PF
-			 	|	TOK_INTEGER
-			 	|	TOK_REAL
-			 	|	TOK_BOOLEAN
-			 	|	KW_NIL
-			 	|	TOK_STRING
+AtomExpr			:	SEP_PO Expression SEP_PF {
+						$$ = $2;
+					}
+			 	|	TOK_INTEGER {
+						Arbre a(NULL, $1);
+						$$ = &a;
+					}
+			 	|	TOK_REAL {
+						Arbre a(NULL, $1);
+						$$ = &a;
+					}
+			 	|	TOK_BOOLEAN {
+						Arbre a(NULL, $1);
+						$$ = &a;
+					}
+			 	|	KW_NIL {
+						Arbre a(NULL, $1);
+						$$ = &a;
+					}
+			 	|	TOK_STRING {
+						Arbre a(NULL, $1);
+						$$ = &a;
+					}
 			 	;
 
-VarExpr				:	TOK_IDENT
+VarExpr				:	TOK_IDENT {
+						Arbre a(NULL, ti.getIdentificateur($1));
+						$$ = &a;
+					}
 				|	VarExpr SEP_CO ListIndices SEP_CF
 				|	VarExpr SEP_DOT TOK_IDENT %prec OP_DOT
 				|	VarExpr OP_PTR

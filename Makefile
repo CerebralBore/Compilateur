@@ -3,7 +3,7 @@ CPPC = g++
 
 all : c2code3a
 
-c2code3a : parser.o pascal.o TableIdentificateur.o TableSymbole.o Symbole.o SymboleProgramme.o SymboleArgument.o SymboleArgumentConstant.o SymboleArgumentVariable.o SymboleFonction.o SymboleProcedure.o SymboleConstante.o SymboleVariable.o Type.o TypeEntier.o
+c2code3a : parser.o pascal.o TableIdentificateur.o TableSymbole.o Symbole.o SymboleProgramme.o SymboleArgument.o SymboleArgumentConstant.o SymboleArgumentVariable.o SymboleFonction.o SymboleProcedure.o SymboleConstante.o SymboleVariable.o Type.o TypeEntier.o Arbre.o
 	${CPPC} -Wall -o $@ $^ -lfl
 
 parser.o : parser.c parser.h
@@ -53,6 +53,9 @@ Type.o : Type.cpp
 	${CPPC} -o $@ -c $<
 
 TypeEntier.o : TypeEntier.cpp
+	${CPPC} -o $@ -c $<
+
+Arbre.o : Arbre.cpp
 	${CPPC} -o $@ -c $<
 
 

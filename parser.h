@@ -113,14 +113,16 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 42 "parser.y"
+#line 62 "parser.y"
 
 	int id;
+	string val;
+	Arbre* expr;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 124 "parser.h"
+#line 126 "parser.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
